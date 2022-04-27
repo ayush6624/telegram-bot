@@ -5,6 +5,10 @@ import 'dotenv/config'
 const { CHAT_ID, BOT_KEY, TG_KEY } = process.env;
 const server = fastify()
 
+server.get("/", async (request, reply) => {
+  reply.send({ "status": true, "message": "You might want to head over to https://ayushgoyal.dev to see what's cooking!" })
+})
+
 server.post<{ Body: { secret: string } }>('/message', async (req, reply) => {
   if (!req.body.secret || req.body.secret !== TG_KEY) {
     reply.code(403).send({ error: true, message: 'Secret not provided or did not match.' });

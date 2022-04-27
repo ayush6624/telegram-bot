@@ -26,6 +26,7 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "fastify": "^3.28.0",
-    "node-fetch": "^3.2.3"
+    "node-fetch": "^3.2.3",
+    "sentence-case": "^3.0.4"
   }
 }

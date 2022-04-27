@@ -16,7 +16,7 @@ const getVisitorMessage = async ({ ip }: { ip: string }): Promise<string> => {
         "timezone": "Timezone",
         "postal": "Zip code",
         "org": "ISP",
-        "loc": "Google maps: "
+        "loc": "Google maps"
     }
 
     Object.entries(ipInfo).map(([key, value]) => {

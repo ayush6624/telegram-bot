@@ -18,7 +18,7 @@ server.post<{ Body: { secret: string, text: string, type?: "analytics", ip?: str
   const API_URL = `https://api.telegram.org/bot${BOT_KEY}/sendMessage`;
 
   if (req.body.type === "analytics") {
-    if(typeof req.ip !== "string") reply.code(404).send({ error: true, message: 'IP address was not provided' });
+    if (typeof req.body.ip !== "string") { reply.code(404).send({ error: true, message: 'IP address was not provided' }); return; }
     req.body.text = await getVisitorMessage({ ip: req.body.ip });
   }
 
@@ -29,13 +29,22 @@ server.post<{ Body: { secret: string, text: string, type?: "analytics", ip?: str
     ...req.body,
   };
 
-  await fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText} ${await res.text()}`);
+    }
+  }
+  catch (err) {
+    console.error("Error: ", err);
+    reply.send({ error: true, message: "Unexpected error occurred. Check server logs..." });
+  }
 
   reply.send({ 'error': false, message: 'Message delivered successfully' });
 });

@@ -10,7 +10,7 @@ server.get("/", async (request, reply) => {
   reply.send({ "status": true, "message": "You might want to head over to https://ayushgoyal.dev to see what's cooking!" })
 })
 
-server.post<{ Body: { secret: string, text: string, type?: "analytics", ip?: string } }>('/message', async (req, reply) => {
+server.post<{ Body: { secret: string, text: string, type?: "analytics", ip?: string, source?: string } }>('/message', async (req, reply) => {
   if (!req.body.secret || req.body.secret !== TG_KEY) {
     reply.code(403).send({ error: true, message: 'Secret not provided or did not match.' });
   }
@@ -19,7 +19,7 @@ server.post<{ Body: { secret: string, text: string, type?: "analytics", ip?: str
 
   if (req.body.type === "analytics") {
     if (typeof req.body.ip !== "string") { reply.code(404).send({ error: true, message: 'IP address was not provided' }); return; }
-    req.body.text = await getVisitorMessage({ ip: req.body.ip });
+    req.body.text = await getVisitorMessage({ ip: req.body.ip, source: req.body.source });
   }
 
   const body = {

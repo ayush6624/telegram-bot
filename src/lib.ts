@@ -14,7 +14,7 @@ const escapeCharacters = (text: string): string => {
     return escape(String(text), ["slashes"]) // Ignore slashes
 };
 
-const getVisitorMessage = async ({ ip }: { ip: string }): Promise<string> => {
+const getVisitorMessage = async ({ ip, source }: { ip: string, source?: string }): Promise<string> => {
     let text = "New visitor 🎉\n";
     const ipInfo = await fetch(`https://ipinfo.io/${ip}/json?token=${IP_INFO_TOKEN}`).then(res => res.json()) as Record<string, string>;
 
@@ -32,6 +32,9 @@ const getVisitorMessage = async ({ ip }: { ip: string }): Promise<string> => {
     Object.entries(ipInfo).map(([key, value]) => {
         text += `\n${words[key] ?? sentenceCase(key)}: ${key === "loc" ? value = `[link](https://www.google.com/maps/place/${value.split(",")[0]},${value.split(",")[1]})` : escapeCharacters(value)}`;
     });
+
+    if(source)
+        text += `\nSource: ${escapeCharacters(source)}`;
 
     return text;
 }
